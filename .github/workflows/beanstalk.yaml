@@ -1,6 +1,17 @@
 name: Deploy Docker Beanstalk Workflow
 run-name: Deploy Docker Beanstalk Workflow
-on: [workflow_call]
+on:
+  workflow_call:
+    inputs:
+      docker-image:
+        description: 'Image to be deployed with tag'
+        type: 'string'
+        required: true
+
+      container-port: 
+        description: 'Port of the container'
+        type: number
+        required: true
 
 jobs:
   beanstalk:
@@ -17,7 +28,7 @@ jobs:
 
       - name: Create Dockerrun.aws.json file
         run: |
-          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ secrets.DOCKER_HUB_USER }}/${{ steps.set-app-name.outputs.APP_NAME }}:latest", "Update": "true"}, "Ports": [{"ContainerPort": 8080, "HostPort": 80}]}' > Dockerrun.aws.json
+          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ inputs.docker-image }}", "Update": "true"}, "Ports": [{"ContainerPort": ${{ inputs.docker-image }}, "HostPort": 80}]}' > Dockerrun.aws.json
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
