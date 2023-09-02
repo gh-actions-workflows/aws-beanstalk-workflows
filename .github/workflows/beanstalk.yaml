@@ -15,6 +15,10 @@ jobs:
           REPO_NAME=$(echo "$OWNER_AND_REPO" | cut -d'/' -f2)
           echo "APP_NAME=${REPO_NAME}" >> $GITHUB_OUTPUT
 
+      - name: Create Dockerrun.aws.json file
+        run: |
+          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "pedro6571/${{ steps.set-app-name.outputs.APP_NAME }}:latest", "Update": "true"}, "Ports": [{"ContainerPort": 8080, "HostPort": 80}]}' > Dockerrun.aws.json
+
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
