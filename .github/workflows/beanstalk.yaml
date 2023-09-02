@@ -17,7 +17,7 @@ jobs:
 
       - name: Create Dockerrun.aws.json file
         run: |
-          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "pedro6571/${{ steps.set-app-name.outputs.APP_NAME }}:latest", "Update": "true"}, "Ports": [{"ContainerPort": 8080, "HostPort": 80}]}' > Dockerrun.aws.json
+          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ secrets.DOCKER_HUB_USER }}/${{ steps.set-app-name.outputs.APP_NAME }}:latest", "Update": "true"}, "Ports": [{"ContainerPort": 8080, "HostPort": 80}]}' > Dockerrun.aws.json
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
