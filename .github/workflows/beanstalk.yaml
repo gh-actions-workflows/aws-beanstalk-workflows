@@ -29,6 +29,7 @@ jobs:
       - name: Create Dockerrun.aws.json file
         run: |
           echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ inputs.docker-image }}", "Update": "true"}, "Ports": [{"ContainerPort": ${{ inputs.docker-image }}, "HostPort": 80}]}' > Dockerrun.aws.json
+          cat Dockerrun.aws.json
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
