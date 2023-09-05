@@ -12,6 +12,15 @@ on:
         description: 'Port of the container'
         type: number
         required: true
+    secrets:
+      aws_key_id:
+        required: true
+      aws_secret_key:
+        required: true
+      aws_region:
+        required: true
+      aws_bucket_name:
+        required: true
 
 jobs:
   beanstalk:
@@ -34,12 +43,12 @@ jobs:
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          aws_access_key: ${{ secrets.AWS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-          region: ${{ vars.AWS_REGION }}
+          aws_access_key: ${{ secrets.aws_key_id }}
+          aws_secret_key: ${{ secrets.aws_secret_key }}
+          region: ${{ secrets.aws_region }}
           application_name: ${{ steps.set-app-name.outputs.APP_NAME }}
           environment_name: ${{ steps.set-app-name.outputs.APP_NAME }}-${{ github.ref_name }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
           deployment_package: Dockerrun.aws.json
-          existing_bucket_name: ${{ secrets.AWS_BUCKET_NAME }}
+          existing_bucket_name: ${{ secrets.aws_bucket_name }}
           wait_for_deployment: true
