@@ -3,15 +3,19 @@ run-name: Deploy Docker Beanstalk Workflow
 on:
   workflow_call:
     inputs:
-      docker-image:
-        description: 'Image to be deployed with tag'
-        type: 'string'
+      app_name:
+        description: Name of the application to be deployed
+        type: string
         required: true
-
-      container-port: 
-        description: 'Port of the container'
+      docker_image:
+        description: Image to be deployed with tag
+        type: string
+        required: true
+      container_port: 
+        description: Port of the container
         type: number
         required: true
+
     secrets:
       aws_key_id:
         required: true
@@ -28,16 +32,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set application name
-        id: set-app-name
-        run: |
-          OWNER_AND_REPO=${{ github.repository }}
-          REPO_NAME=$(echo "$OWNER_AND_REPO" | cut -d'/' -f2)
-          echo "APP_NAME=${REPO_NAME}" >> $GITHUB_OUTPUT
-
       - name: Create Dockerrun.aws.json file
         run: |
-          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ inputs.docker-image }}", "Update": "true"}, "Ports": [{"ContainerPort": ${{ inputs.container-port }}, "HostPort": 80}]}' > Dockerrun.aws.json
+          echo '{"AWSEBDockerrunVersion": "1", "Image": {"Name": "${{ inputs.docker_image }}", "Update": "true"}, "Ports": [{"ContainerPort": ${{ inputs.container_port }}, "HostPort": 80}]}' > Dockerrun.aws.json
           cat Dockerrun.aws.json
 
       - name: Beanstalk Deploy
@@ -46,8 +43,8 @@ jobs:
           aws_access_key: ${{ secrets.aws_key_id }}
           aws_secret_key: ${{ secrets.aws_secret_key }}
           region: ${{ secrets.aws_region }}
-          application_name: ${{ steps.set-app-name.outputs.APP_NAME }}
-          environment_name: ${{ steps.set-app-name.outputs.APP_NAME }}-${{ github.ref_name }}
+          application_name: ${{ inputs.app_name }}
+          environment_name: ${{ inputs.app_name }}-${{ github.ref_name }}
           version_label: ${{ github.ref_name }}-${{ github.sha }}
           deployment_package: Dockerrun.aws.json
           existing_bucket_name: ${{ secrets.aws_bucket_name }}
