@@ -1,8 +1,8 @@
 # AWS Elastic Beanstalk Deploy Workflow
 
-Publique sua imagem Docker no AWS Elastic Beanstalk.
+Publish your Docker image to AWS Elastic Beanstalk.
 
-## Como usar?
+## How to use?
 
 ```yaml
 name: Deploy to AWS EB
@@ -12,7 +12,7 @@ jobs:
   publish:
     uses: gh-actions-workflows/docker-workflows/.github/workflows/docker-publish.yaml@master
     with:
-      app_name: my_app_name # O nome da aplicação será usado para nomear a imagem
+      app_name: my_app_name # The application name will be used to name the image
       docker_hub_user: ${{ vars.DOCKER_HUB_USER }}
     secrets:
       docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
@@ -28,7 +28,7 @@ jobs:
     with:
       app_name: my_app_name
       docker_image: ${{ needs.publish.outputs.image_name }}
-      container_port: 8080 # Porta exposta pelo container
+      container_port: 8080
 ```
 
-Para mais detalhes sobre o funcionamento consulte o arquivo: [beanstalk.yaml](https://github.com/gh-actions-workflows/aws-beanstalk-workflows/blob/master/.github/workflows/beanstalk.yaml).
+For more details on how it works, see the file: [beanstalk.yaml](https://github.com/gh-actions-workflows/aws-beanstalk-workflows/blob/master/.github/workflows/beanstalk.yaml).
